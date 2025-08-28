@@ -38,12 +38,19 @@ class Member(db.Model):
         topics = []
         for topic in self.interest_in_topics:
             topics.append({'id' : topic.id, 'name' : topic.name})
+
+        fav_language = Language.query.get(self.fav_language)
+        language_json = {
+            'id' : fav_language.id,
+            'name' : fav_language.name
+        }
+
         member_json = {
             'id' : self.id,
             'email' : self.email,
             'location' : self.location,
             'first_learn_date' : datetime.strftime(self.first_learn_date, '%Y-%m-%d'),
-            'fav_language' : self.fav_language,
+            'fav_language' : language_json,
             'about' : self.about,
             'learn_new_interest' : self.learn_new_interest,
             'interest_in_topics' : topics
