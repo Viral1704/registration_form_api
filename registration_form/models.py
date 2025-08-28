@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from werkzeug.security import generate_password_hash
 
 from .extensions import db 
@@ -31,6 +33,23 @@ class Member(db.Model):
     @password.setter
     def password(self, password):
         self.password_hash = generate_password_hash(password)
+
+    def to_json(self):
+        topics = []
+        for topic in self.interest_in_topics:
+            topics.append({'id' : topic.id, 'name' : topic.name})
+        member_json = {
+            'id' : self.id,
+            'email' : self.email,
+            'location' : self.location,
+            'first_learn_date' : datetime.strftime(self.first_learn_date, '%Y-%m-%d'),
+            'fav_language' : self.fav_language,
+            'about' : self.about,
+            'learn_new_interest' : self.learn_new_interest,
+            'interest_in_topics' : topics
+        }
+        
+        return member_json
 
 class Language(db.Model):
     id = db.Column(db.Integer, primary_key=True)
